@@ -28,7 +28,7 @@ public class StaticScreen extends JFrame {
 
     private static List<JCheckBox> selectedCheckboxes;
 
-//    private static List<String> selectedCheckboxesToString;
+    //    private static List<String> selectedCheckboxesToString;
     private final int maxSelectedCheckboxes = 3;
 
 
@@ -143,6 +143,7 @@ public class StaticScreen extends JFrame {
         refreshButton.setBounds(10, 510 , 150, 25);
         refreshButton.addActionListener(e -> {
             System.out.println(TheBot.getSelectedCheckboxesToString());
+
 
             revalidate();
             repaint();

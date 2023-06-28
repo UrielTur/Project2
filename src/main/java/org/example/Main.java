@@ -5,14 +5,14 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Main {
 
-    public static void main(String[] args){
-
+    public static void main(String[] args) {
 
         StaticScreen window = new StaticScreen();
         window.showWindow();
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(new TheBot());
+
         }catch (TelegramApiException e){
             throw new RuntimeException();
         }
