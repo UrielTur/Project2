@@ -68,14 +68,15 @@ public class TheBot extends TelegramLongPollingBot {
             chatId = update.getMessage().getChatId();
         }
 
-        SendMessage sendMessage = new SendMessage();
 
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
 
         Integer specialPhase = this.phasesForLevels.get(chatId);
 
+
         if (specialPhase == null) {
 
-            sendMessage.setChatId(chatId);
 
             sendMessage.setText("Choose an option: "); //ההודעה למשתמש שיבחר אופציה
 
@@ -102,7 +103,7 @@ public class TheBot extends TelegramLongPollingBot {
             sendMessage.setReplyMarkup(inlineKeyboardMarkup); // להעביר את המקלדת
 
 
-
+//            sendMessage.setChatId(chatId);
             this.phasesForLevels.put(chatId, 1);
 
 
@@ -111,13 +112,18 @@ public class TheBot extends TelegramLongPollingBot {
 
                 if (update.getCallbackQuery().getData().equals("Tell a joke")) {
                     sendAJoke(chatId);
+                    this.phasesForLevels.put(chatId, 3);
 
                 } else if (update.getCallbackQuery().getData().equals("Tell a quote")) {
                     sendQuote(chatId);
+                    this.phasesForLevels.put(chatId, 3);
 
+                } else if (update.getCallbackQuery().getData().equals("Fact about cats")) {
+                    sendFact(chatId);
+                    this.phasesForLevels.put(chatId, 3);
 
                 } else if (update.getCallbackQuery().getData().equals("Country information")) {
-                    sendMessage.setChatId(chatId);
+//                    sendMessage.setChatId(chatId);
                     sendMessage.setText("Write the code of the country that you want to know about her. For example: ISR - Israel.");
                     this.phasesForLevels.put(chatId, 2);
                 }
@@ -129,11 +135,11 @@ public class TheBot extends TelegramLongPollingBot {
                     ObjectMapper objectMapper1 = new ObjectMapper();
                     Countries country = objectMapper1.readValue(response1.getBody(), Countries.class);
                     if (country.getName() == null) {
-                        sendMessage.setChatId(chatId);
+//                        sendMessage.setChatId(chatId);
                         sendMessage.setText("Error, Country have not found");
                     } else {
                         String countryInfo = "The country you choose is: " + country.getName() + ". The population: " + country.getPopulation() + ". The capital is: " + country.getCapital() + ". The region is: " + country.getRegion() + " .";
-                        sendMessage.setChatId(chatId);
+//                        sendMessage.setChatId(chatId);
                         sendMessage.setText(countryInfo);
                         this.phasesForLevels.put(chatId, 3);
 
@@ -146,8 +152,9 @@ public class TheBot extends TelegramLongPollingBot {
             }
              if (specialPhase == 3) {
 
-                 sendMessage.setChatId(chatId);
+//                 sendMessage.setChatId(chatId);
                  sendMessage.setText("Would you like to continue?");
+
                 InlineKeyboardButton yes = new InlineKeyboardButton();
                 yes.setText("Yes");
                 yes.setCallbackData("Yes");
@@ -172,7 +179,7 @@ public class TheBot extends TelegramLongPollingBot {
                 if (callbackData.equals("yes")){
                     this.phasesForLevels.put(chatId, null);
                 }else  {
-                    sendMessage.setChatId(chatId);
+//                    sendMessage.setChatId(chatId);
                     sendMessage.setText("Alright then. See you soon!. \nType /start to restart the bot.");
                     this.phasesForLevels.put(chatId, 5);
                 }
@@ -310,6 +317,21 @@ public class TheBot extends TelegramLongPollingBot {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(chatId);
             sendMessage.setText(quote);
+            send(sendMessage);
+        } catch (JsonProcessingException | UnirestException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendFact(long chatId){
+        try {
+            com.mashape.unirest.http.HttpResponse<String> response5 =Unirest.get("https://catfact.ninja/fact").asString();
+            ObjectMapper objectMapper5 = new ObjectMapper();
+            Cats cats = objectMapper5.readValue(response5.getBody() , Cats.class);
+            String catsFact = cats.getFact();
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId);
+            sendMessage.setText(catsFact);
             send(sendMessage);
         } catch (JsonProcessingException | UnirestException e) {
             throw new RuntimeException(e);
