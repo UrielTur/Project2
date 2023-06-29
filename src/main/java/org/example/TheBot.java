@@ -18,7 +18,6 @@ import java.util.Map;
 
 
 public class TheBot extends TelegramLongPollingBot {
-
     private int startChatCounter = 0;
     private final Map<Long , Integer> phases = new HashMap<>(); // נגדיר מפה כדי לתת לכל משתמש מספר ייחודי משלו
     private final Map<Long , Integer> phasesForLevels = new HashMap<>(); // נגדיר מפה לשלבים
@@ -75,122 +74,140 @@ public class TheBot extends TelegramLongPollingBot {
         Integer specialPhase = this.phasesForLevels.get(chatId);
 
 
-        if (specialPhase == null) {
+    if (specialPhase == null) {
 
 
-            sendMessage.setText("Choose an option: "); //ההודעה למשתמש שיבחר אופציה
+        sendMessage.setText("Choose an option: "); //ההודעה למשתמש שיבחר אופציה
 
 
-            InlineKeyboardButton option1 = new InlineKeyboardButton();
-            option1.setText(getSelectedCheckboxesToString().get(0));
-            option1.setCallbackData(getSelectedCheckboxesToString().get(0));
+        InlineKeyboardButton option1 = new InlineKeyboardButton();
+        option1.setText(getSelectedCheckboxesToString().get(0));
+        option1.setCallbackData(getSelectedCheckboxesToString().get(0));
 
-            InlineKeyboardButton option2 = new InlineKeyboardButton();
-            option2.setText(getSelectedCheckboxesToString().get(1));
-            option2.setCallbackData(getSelectedCheckboxesToString().get(1));
+        InlineKeyboardButton option2 = new InlineKeyboardButton();
+        option2.setText(getSelectedCheckboxesToString().get(1));
+        option2.setCallbackData(getSelectedCheckboxesToString().get(1));
 
-            InlineKeyboardButton option3 = new InlineKeyboardButton();
-            option3.setText(getSelectedCheckboxesToString().get(2));
-            option3.setCallbackData(getSelectedCheckboxesToString().get(2));
-
-
-            List<InlineKeyboardButton> topRow = List.of(option1, option2, option3); //פה אני מגדיר שהכפתורי האופציות יוצגו רשמית
-            List<List<InlineKeyboardButton>> keyBord = List.of(topRow); // צורה לקבל את המתודה של המקלדת
-
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //רשת שיש בה כפתורים אבל לא מייצג את האובייקט
-            inlineKeyboardMarkup.setKeyboard(keyBord); // ולכן זאת השורה שמצהירה על המקלדת שהיא מוכנה
-
-            sendMessage.setReplyMarkup(inlineKeyboardMarkup); // להעביר את המקלדת
+        InlineKeyboardButton option3 = new InlineKeyboardButton();
+        option3.setText(getSelectedCheckboxesToString().get(2));
+        option3.setCallbackData(getSelectedCheckboxesToString().get(2));
 
 
-//            sendMessage.setChatId(chatId);
-            this.phasesForLevels.put(chatId, 1);
+        List<InlineKeyboardButton> topRow = List.of(option1, option2, option3); //פה אני מגדיר שהכפתורי האופציות יוצגו רשמית
+        List<List<InlineKeyboardButton>> keyBord = List.of(topRow); // צורה לקבל את המתודה של המקלדת
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //רשת שיש בה כפתורים אבל לא מייצג את האובייקט
+        inlineKeyboardMarkup.setKeyboard(keyBord); // ולכן זאת השורה שמצהירה על המקלדת שהיא מוכנה
+
+        sendMessage.setReplyMarkup(inlineKeyboardMarkup); // להעביר את המקלדת
 
 
-        } else {
-            if (specialPhase == 1) {
+        this.phasesForLevels.put(chatId, 1);
 
-                if (update.getCallbackQuery().getData().equals("Tell a joke")) {
-                    sendAJoke(chatId);
+
+    } else if (specialPhase == 1) {
+            if (update.getCallbackQuery().getData().equals("Tell a joke")) {
+                sendAJoke(chatId);
+                this.phasesForLevels.put(chatId, 3);
+
+            } else if (update.getCallbackQuery().getData().equals("Tell a quote")) {
+                sendQuote(chatId);
+                this.phasesForLevels.put(chatId, 3);
+
+            } else if (update.getCallbackQuery().getData().equals("Fact about cats")) {
+                sendFact(chatId);
+                this.phasesForLevels.put(chatId, 3);
+
+            } else if (update.getCallbackQuery().getData().equals("Country information")) {
+                sendMessage.setText("Write the code of the country that you want to know about her. For example: ISR - Israel.");
+                this.phasesForLevels.put(chatId, 2);
+            } else if (update.getCallbackQuery().getData().equals("Number fact")) {
+                sendMessage.setText("Write the number that you wants to know about him");
+                this.phasesForLevels.put(chatId, 10);
+            }
+        } else if (specialPhase == 2) {
+            String text = update.getMessage().getText();
+
+            try {
+                com.mashape.unirest.http.HttpResponse<String> response1 = Unirest.get("https://restcountries.com/v2/alpha/" + text).asString();
+                ObjectMapper objectMapper1 = new ObjectMapper();
+                Countries country = objectMapper1.readValue(response1.getBody(), Countries.class);
+                if (country.getName() == null) {
+                    sendMessage.setText("Error, Country have not found");
+                } else {
+                    String countryInfo = "The country you choose is: " + country.getName() + ". The population: " + country.getPopulation() + ". The capital is: " + country.getCapital() + ". The region is: " + country.getRegion() + " .";
+                    sendMessage.setText(countryInfo);
                     this.phasesForLevels.put(chatId, 3);
 
-                } else if (update.getCallbackQuery().getData().equals("Tell a quote")) {
-                    sendQuote(chatId);
-                    this.phasesForLevels.put(chatId, 3);
-
-                } else if (update.getCallbackQuery().getData().equals("Fact about cats")) {
-                    sendFact(chatId);
-                    this.phasesForLevels.put(chatId, 3);
-
-                } else if (update.getCallbackQuery().getData().equals("Country information")) {
-//                    sendMessage.setChatId(chatId);
-                    sendMessage.setText("Write the code of the country that you want to know about her. For example: ISR - Israel.");
-                    this.phasesForLevels.put(chatId, 2);
                 }
-            } else if (specialPhase == 2) {
-                try {
-                    String text = update.getMessage().getText();
-
-                    com.mashape.unirest.http.HttpResponse<String> response1 = Unirest.get("https://restcountries.com/v2/alpha/" + text).asString();
-                    ObjectMapper objectMapper1 = new ObjectMapper();
-                    Countries country = objectMapper1.readValue(response1.getBody(), Countries.class);
-                    if (country.getName() == null) {
-//                        sendMessage.setChatId(chatId);
-                        sendMessage.setText("Error, Country have not found");
-                    } else {
-                        String countryInfo = "The country you choose is: " + country.getName() + ". The population: " + country.getPopulation() + ". The capital is: " + country.getCapital() + ". The region is: " + country.getRegion() + " .";
-//                        sendMessage.setChatId(chatId);
-                        sendMessage.setText(countryInfo);
-                        this.phasesForLevels.put(chatId, 3);
-
-                    }
-                    } catch(JacksonException | UnirestException exception){
-                        throw new RuntimeException(exception);
-                    }
-
-
+            } catch (JacksonException | UnirestException exception) {
+                throw new RuntimeException(exception);
             }
-             if (specialPhase == 3) {
-
-//                 sendMessage.setChatId(chatId);
-                 sendMessage.setText("Would you like to continue?");
-
-                InlineKeyboardButton yes = new InlineKeyboardButton();
-                yes.setText("Yes");
-                yes.setCallbackData("Yes");
-                InlineKeyboardButton no = new InlineKeyboardButton();
-                no.setText("No");
-                no.setCallbackData("No");
-
-                List<InlineKeyboardButton> topRow = List.of(yes, no);
-
-                List<List<InlineKeyboardButton>> keyboard = List.of(topRow);
 
 
-                InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-                inlineKeyboardMarkup.setKeyboard(keyboard);
+        } else if (specialPhase == 3) {
 
-                sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+            sendMessage.setText("Would you like to continue?");
 
-                this.phasesForLevels.put(chatId, 4);
-             }
-            if (specialPhase == 4){
-                String callbackData = update.getCallbackQuery().getData().toLowerCase();
-                if (callbackData.equals("yes")){
-                    this.phasesForLevels.put(chatId, null);
-                }else  {
-//                    sendMessage.setChatId(chatId);
-                    sendMessage.setText("Alright then. See you soon!. \nType /start to restart the bot.");
-                    this.phasesForLevels.put(chatId, 5);
+            InlineKeyboardButton yes = new InlineKeyboardButton();
+            yes.setText("Yes");
+            yes.setCallbackData("Yes");
+            InlineKeyboardButton no = new InlineKeyboardButton();
+            no.setText("No");
+            no.setCallbackData("No");
+
+            List<InlineKeyboardButton> topRow = List.of(yes, no);
+
+            List<List<InlineKeyboardButton>> keyboard = List.of(topRow);
+
+
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+            inlineKeyboardMarkup.setKeyboard(keyboard);
+
+            sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+
+            this.phasesForLevels.put(chatId, 4);
+        } else if (specialPhase == 4) {
+            String callbackData = update.getCallbackQuery().getData().toLowerCase();
+            if (callbackData.equals("yes")) {
+                this.phasesForLevels.put(chatId, null);
+            } else {
+                sendMessage.setText("Alright then. See you soon!. \nType /start to restart the bot.");
+                this.phasesForLevels.put(chatId, 5);
+            }
+        } else if (specialPhase == 5) {
+            String callbackData = update.getMessage().getText();
+            if (callbackData.equals("/start"))
+                this.phasesForLevels.put(chatId, null);
+        } else if (specialPhase == 10) {
+            String text = update.getMessage().getText();
+
+            try {
+
+                com.mashape.unirest.http.HttpResponse<String> response3 = Unirest.get("http://numbersapi.com/" + text + "?json").asString();
+                ObjectMapper objectMapper3 = new ObjectMapper();
+                Numbers number = objectMapper3.readValue(response3.getBody(), Numbers.class);
+                if (number.getNumber() >= Double.NEGATIVE_INFINITY && number.getNumber() <= Double.POSITIVE_INFINITY) {
+                    String numberInfo = number.getText();
+                    sendMessage.setText(numberInfo);
+                    this.phasesForLevels.put(chatId, 3);
+                } else {
+                    sendMessage.setText("Error, choose only number");
+
                 }
+            } catch (JacksonException | UnirestException exception) {
+                throw new RuntimeException(exception);
             }
-            if (specialPhase == 5){
-                String callbackData = update.getMessage().getText();
-                if(callbackData.equals("/start"))
-                    this.phasesForLevels.put(chatId, null);
-            }
-         }
-        send(sendMessage);
+
+
+
+        }
+
+
+
+
+send(sendMessage);
+
 
 
 
@@ -204,11 +221,9 @@ public class TheBot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
             if (messageText.equals("/start")) {
                 startChatCounter++;
-                System.out.println("The bot got: " + "'" + startChatCounter + "'" + " requests start chat.");
                 this.phases.put(chatId, phase); //המפה תחלק כל משתמש ייחודי לפי המזהה שלו ובעצם כל משתמש יופיע כייחודי
                 theSize = this.phases.size();
-                System.out.println("There are " + theSize + " different users who called the bot.");
-                System.out.println();
+
             }
         }
 
@@ -229,45 +244,11 @@ public class TheBot extends TelegramLongPollingBot {
                 mostActiveUser = userId;
             }
         }
-        System.out.println("The most active user is: " + mostActiveUser + " with " + maxOfMessages + " messages.");//נדפיס את המשתשמש ששולח הכי הרבה הודעות
-        System.out.println();
 
 
 
-        try {
-            com.mashape.unirest.http.HttpResponse<String> response2 = Unirest.get("https://official-joke-api.appspot.com/random_joke").asString();
-            ObjectMapper objectMapper2 = new ObjectMapper();
-            Jokes jokes = objectMapper2.readValue(response2.getBody() , Jokes.class);
-            System.out.println(jokes.getSetup() + " " + jokes.getPunchline());
 
 
-            com.mashape.unirest.http.HttpResponse<String> response5 =Unirest.get("https://catfact.ninja/fact").asString();
-            ObjectMapper objectMapper5 = new ObjectMapper();
-            Cats cats = objectMapper5.readValue(response5.getBody() , Cats.class);
-            System.out.println(cats.getFact());
-
-
-            com.mashape.unirest.http.HttpResponse<String> response4 =Unirest.get("https://api.quotable.io/random").asString();
-            ObjectMapper objectMapper4 = new ObjectMapper();
-            Quotes quotes = objectMapper4.readValue(response4.getBody() , Quotes.class);
-            System.out.println(quotes.getAuthor() + ": '' " + quotes.getContent() + " ''");
-
-
-            com.mashape.unirest.http.HttpResponse<String> response3 =Unirest.get("http://numbersapi.com/random?json").asString();
-            ObjectMapper objectMapper3 = new ObjectMapper();
-            Numbers numbers = objectMapper3.readValue(response3.getBody() , Numbers.class);
-            System.out.println(numbers.getText());
-
-
-            com.mashape.unirest.http.HttpResponse<String> response1 =Unirest.get("https://restcountries.com/v2/alpha/ISR").asString();
-            ObjectMapper objectMapper1 = new ObjectMapper();
-            Countries countries = objectMapper1.readValue(response1.getBody() , Countries.class);
-            System.out.println("The population: " + countries.getPopulation() +". The capital is: " + countries.getCapital() + ". The borders: " + countries.getRegion() + " .");
-
-
-        } catch (JsonProcessingException | UnirestException e) {
-            throw new RuntimeException(e);
-        }
 
 
 
@@ -296,7 +277,6 @@ public class TheBot extends TelegramLongPollingBot {
             ObjectMapper objectMapper2 = new ObjectMapper();
             Jokes jokes = objectMapper2.readValue(response2.getBody() , Jokes.class);
             String joke = jokes.getSetup() + " " + jokes.getPunchline();
-            System.out.println(joke);
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(chatId);
             sendMessage.setText(joke);
