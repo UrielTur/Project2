@@ -127,7 +127,7 @@ public class TheBot extends TelegramLongPollingBot {
                 this.phasesForLevels.put(chatId, 2);
 
             } else if (update.getCallbackQuery().getData().equals("Number fact")) {
-                sendMessage.setText("Write the number that you wants to know about him");
+                sendMessage.setText("Write the number that you wants to know about him!");
                 this.phasesForLevels.put(chatId, 3);
             }
         } else if (specialPhase == 2) {
@@ -138,7 +138,7 @@ public class TheBot extends TelegramLongPollingBot {
                 ObjectMapper objectMapper1 = new ObjectMapper();
                 Countries country = objectMapper1.readValue(response1.getBody(), Countries.class);
                 if (country.getName() == null) {
-                    sendMessage.setText("Error, Country have not found");
+                    sendMessage.setText("Error, Country have not found! Please try again!");
                 } else {
                     String countryInfo = "The country you choose is: " + country.getName() + ". The population: " + country.getPopulation() + ". The capital is: " + country.getCapital() + ". The region is: " + country.getRegion() + " .";
                     sendMessage.setText(countryInfo);
@@ -166,7 +166,7 @@ public class TheBot extends TelegramLongPollingBot {
                     continueMessage(chatId);
                     this.phasesForLevels.put(chatId, 4);
                 } else {
-                    sendMessage.setText("Error, choose only number");
+                    sendMessage.setText("Error, choose only number!");
 
                 }
             } catch (JacksonException | UnirestException exception) {
