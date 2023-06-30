@@ -104,26 +104,30 @@ public class StaticScreen extends JFrame {
 
 
 
-        JLabel optionsLabel = new JLabel("Choose a 3 options for the TelegramBot");
+        JLabel optionsLabel = new JLabel("Choose 3 options for the TelegramBot");
         optionsLabel.setFont(new Font("Arial", Font.BOLD, 16));
         optionsLabel.setBounds(10, 260, 350, 30);
         this.add(optionsLabel);
 
 
-        JLabel errorMessage = new JLabel("You can choose only 3 options!");
+        JLabel errorMessage = new JLabel("You can't choose much more than 3 options!");
         errorMessage.setFont(new Font("Arial", Font.BOLD, 15));
-        errorMessage.setBounds(10, 280, 300, 25);
+        errorMessage.setBounds(10, 285, 400, 25);
         this.add(errorMessage);
 
 
         JCheckBox[] jCheckBoxes = new JCheckBox[5];
         jCheckBoxes[0] = new JCheckBox("Tell a joke");
+        jCheckBoxes[0].setSelected(true);
+
         jCheckBoxes[0].setBounds(10, 320, 100, 25);
 
         jCheckBoxes[1] = new JCheckBox("Fact about cats");
+        jCheckBoxes[1].setSelected(true);
         jCheckBoxes[1].setBounds(10, 360, 120, 25);
 
         jCheckBoxes[2] = new JCheckBox("Tell a quote");
+        jCheckBoxes[2].setSelected(true);
         jCheckBoxes[2].setBounds(10, 400, 100, 25);
 
         jCheckBoxes[3] = new JCheckBox("Country information");
@@ -139,8 +143,8 @@ public class StaticScreen extends JFrame {
         this.add(jCheckBoxes[4]);
 
 
-        JButton refreshButton = new JButton("Refresh");
-        refreshButton.setBounds(10, 510 , 150, 25);
+        JButton refreshButton = new JButton("Refresh Options");
+        refreshButton.setBounds(20, 520 , 150, 30);
         refreshButton.addActionListener(e -> {
             System.out.println(TheBot.getSelectedCheckboxesToString());
 
@@ -159,6 +163,16 @@ public class StaticScreen extends JFrame {
 
         new Thread(() -> {
             selectedCheckboxes = new ArrayList<>();
+
+            TheBot.getSelectedCheckboxesToString().add(jCheckBoxes[0].getText());
+            TheBot.getSelectedCheckboxesToString().add(jCheckBoxes[1].getText());
+            TheBot.getSelectedCheckboxesToString().add(jCheckBoxes[2].getText());
+
+            selectedCheckboxes.add(jCheckBoxes[0]);
+            selectedCheckboxes.add(jCheckBoxes[1]);
+            selectedCheckboxes.add(jCheckBoxes[2]);
+
+
 
             for (int i = 0; i < jCheckBoxes.length; i++) {
                 JCheckBox checkBox = jCheckBoxes[i];
@@ -206,27 +220,15 @@ public class StaticScreen extends JFrame {
         new Thread(()->{
             while (true){
                 amountOfRequestsToBotNumber.setText(theBot.getStartChatCounter()+" ");
-            }
-        }).start();
-
-        new Thread(()->{
-            while (true){
-
                 uniqueUserToBotNumber.setText(theBot.getTheSize()+" ");
-            }
-        }).start();
-
-        new Thread(()->{
-            while (true){
                 if (theBot.getMostActiveUser().equals(" ") && theBot.getMaxOfMessages() == 0) {
                     popularUserToString.setText("No one");
                 }else {
                     popularUserToString.setText("'" + theBot.getMostActiveUser()+ "'" + " with " + theBot.getMaxOfMessages() + " messages");
                 }
+
             }
         }).start();
-
-
 
     }
 

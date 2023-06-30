@@ -66,64 +66,69 @@ public class TheBot extends TelegramLongPollingBot {
         } else {
             chatId = update.getMessage().getChatId();
         }
-
-
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
+
+
 
         Integer specialPhase = this.phasesForLevels.get(chatId);
 
 
-    if (specialPhase == null) {
 
 
-        sendMessage.setText("Choose an option: "); //ההודעה למשתמש שיבחר אופציה
+        if (specialPhase == null) {
 
 
-        InlineKeyboardButton option1 = new InlineKeyboardButton();
-        option1.setText(getSelectedCheckboxesToString().get(0));
-        option1.setCallbackData(getSelectedCheckboxesToString().get(0));
-
-        InlineKeyboardButton option2 = new InlineKeyboardButton();
-        option2.setText(getSelectedCheckboxesToString().get(1));
-        option2.setCallbackData(getSelectedCheckboxesToString().get(1));
-
-        InlineKeyboardButton option3 = new InlineKeyboardButton();
-        option3.setText(getSelectedCheckboxesToString().get(2));
-        option3.setCallbackData(getSelectedCheckboxesToString().get(2));
+            sendMessage.setText("Choose an option: "); //ההודעה למשתמש שיבחר אופציה
 
 
-        List<InlineKeyboardButton> topRow = List.of(option1, option2, option3); //פה אני מגדיר שהכפתורי האופציות יוצגו רשמית
-        List<List<InlineKeyboardButton>> keyBord = List.of(topRow); // צורה לקבל את המתודה של המקלדת
+            InlineKeyboardButton option1 = new InlineKeyboardButton();
+            option1.setText(getSelectedCheckboxesToString().get(0));
+            option1.setCallbackData(getSelectedCheckboxesToString().get(0));
 
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //רשת שיש בה כפתורים אבל לא מייצג את האובייקט
-        inlineKeyboardMarkup.setKeyboard(keyBord); // ולכן זאת השורה שמצהירה על המקלדת שהיא מוכנה
+            InlineKeyboardButton option2 = new InlineKeyboardButton();
+            option2.setText(getSelectedCheckboxesToString().get(1));
+            option2.setCallbackData(getSelectedCheckboxesToString().get(1));
 
-        sendMessage.setReplyMarkup(inlineKeyboardMarkup); // להעביר את המקלדת
+            InlineKeyboardButton option3 = new InlineKeyboardButton();
+            option3.setText(getSelectedCheckboxesToString().get(2));
+            option3.setCallbackData(getSelectedCheckboxesToString().get(2));
 
 
-        this.phasesForLevels.put(chatId, 1);
+            List<InlineKeyboardButton> topRow = List.of(option1, option2, option3); //פה אני מגדיר שהכפתורי האופציות יוצגו רשמית
+            List<List<InlineKeyboardButton>> keyBord = List.of(topRow); // צורה לקבל את המתודה של המקלדת
+
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //רשת שיש בה כפתורים אבל לא מייצג את האובייקט
+            inlineKeyboardMarkup.setKeyboard(keyBord); // ולכן זאת השורה שמצהירה על המקלדת שהיא מוכנה
+
+            sendMessage.setReplyMarkup(inlineKeyboardMarkup); // להעביר את המקלדת
 
 
-    } else if (specialPhase == 1) {
+            this.phasesForLevels.put(chatId, 1);
+
+
+        } else if (specialPhase == 1) {
             if (update.getCallbackQuery().getData().equals("Tell a joke")) {
                 sendAJoke(chatId);
-                this.phasesForLevels.put(chatId, 3);
+                this.phasesForLevels.put(chatId, 4);
 
             } else if (update.getCallbackQuery().getData().equals("Tell a quote")) {
                 sendQuote(chatId);
-                this.phasesForLevels.put(chatId, 3);
+                this.phasesForLevels.put(chatId, 4);
+
 
             } else if (update.getCallbackQuery().getData().equals("Fact about cats")) {
                 sendFact(chatId);
-                this.phasesForLevels.put(chatId, 3);
+                this.phasesForLevels.put(chatId, 4);
+
 
             } else if (update.getCallbackQuery().getData().equals("Country information")) {
                 sendMessage.setText("Write the code of the country that you want to know about her. For example: ISR - Israel.");
                 this.phasesForLevels.put(chatId, 2);
+
             } else if (update.getCallbackQuery().getData().equals("Number fact")) {
                 sendMessage.setText("Write the number that you wants to know about him");
-                this.phasesForLevels.put(chatId, 10);
+                this.phasesForLevels.put(chatId, 3);
             }
         } else if (specialPhase == 2) {
             String text = update.getMessage().getText();
@@ -137,7 +142,8 @@ public class TheBot extends TelegramLongPollingBot {
                 } else {
                     String countryInfo = "The country you choose is: " + country.getName() + ". The population: " + country.getPopulation() + ". The capital is: " + country.getCapital() + ". The region is: " + country.getRegion() + " .";
                     sendMessage.setText(countryInfo);
-                    this.phasesForLevels.put(chatId, 3);
+                    continueMessage(chatId);
+                    this.phasesForLevels.put(chatId, 4);
 
                 }
             } catch (JacksonException | UnirestException exception) {
@@ -145,41 +151,8 @@ public class TheBot extends TelegramLongPollingBot {
             }
 
 
-        } else if (specialPhase == 3) {
-
-            sendMessage.setText("Would you like to continue?");
-
-            InlineKeyboardButton yes = new InlineKeyboardButton();
-            yes.setText("Yes");
-            yes.setCallbackData("Yes");
-            InlineKeyboardButton no = new InlineKeyboardButton();
-            no.setText("No");
-            no.setCallbackData("No");
-
-            List<InlineKeyboardButton> topRow = List.of(yes, no);
-
-            List<List<InlineKeyboardButton>> keyboard = List.of(topRow);
-
-
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            inlineKeyboardMarkup.setKeyboard(keyboard);
-
-            sendMessage.setReplyMarkup(inlineKeyboardMarkup);
-
-            this.phasesForLevels.put(chatId, 4);
-        } else if (specialPhase == 4) {
-            String callbackData = update.getCallbackQuery().getData().toLowerCase();
-            if (callbackData.equals("yes")) {
-                this.phasesForLevels.put(chatId, null);
-            } else {
-                sendMessage.setText("Alright then. See you soon!. \nType /start to restart the bot.");
-                this.phasesForLevels.put(chatId, 5);
-            }
-        } else if (specialPhase == 5) {
-            String callbackData = update.getMessage().getText();
-            if (callbackData.equals("/start"))
-                this.phasesForLevels.put(chatId, null);
-        } else if (specialPhase == 10) {
+        }
+        else if (specialPhase == 3) {
             String text = update.getMessage().getText();
 
             try {
@@ -190,7 +163,8 @@ public class TheBot extends TelegramLongPollingBot {
                 if (number.getNumber() >= Double.NEGATIVE_INFINITY && number.getNumber() <= Double.POSITIVE_INFINITY) {
                     String numberInfo = number.getText();
                     sendMessage.setText(numberInfo);
-                    this.phasesForLevels.put(chatId, 3);
+                    continueMessage(chatId);
+                    this.phasesForLevels.put(chatId, 4);
                 } else {
                     sendMessage.setText("Error, choose only number");
 
@@ -202,11 +176,24 @@ public class TheBot extends TelegramLongPollingBot {
 
 
         }
+        else if (specialPhase == 4) {
+            String callbackData = update.getCallbackQuery().getData().toLowerCase();
+            if (callbackData.equals("yes")) {
+                this.phasesForLevels.put(chatId, null);
+            } else if (callbackData.equals("no")){
+                sendMessage.setText("Alright then. See you soon!. \nType /start to restart the bot.");
+                this.phasesForLevels.put(chatId, 5);
+            }
+        }
+        else if (specialPhase == 5){
+            String callbackData = update.getMessage().getText();
+            if(callbackData.equals("/start"))
+                this.phasesForLevels.put(chatId, null);
+        }
 
 
 
-
-send(sendMessage);
+        send(sendMessage);
 
 
 
@@ -278,9 +265,13 @@ send(sendMessage);
             Jokes jokes = objectMapper2.readValue(response2.getBody() , Jokes.class);
             String joke = jokes.getSetup() + " " + jokes.getPunchline();
             SendMessage sendMessage = new SendMessage();
+
             sendMessage.setChatId(chatId);
             sendMessage.setText(joke);
             send(sendMessage);
+
+            continueMessage(chatId);
+
 
         }catch (JacksonException | UnirestException exception){
             throw new RuntimeException(exception);
@@ -298,6 +289,8 @@ send(sendMessage);
             sendMessage.setChatId(chatId);
             sendMessage.setText(quote);
             send(sendMessage);
+
+            continueMessage(chatId);
         } catch (JsonProcessingException | UnirestException e) {
             throw new RuntimeException(e);
         }
@@ -313,9 +306,52 @@ send(sendMessage);
             sendMessage.setChatId(chatId);
             sendMessage.setText(catsFact);
             send(sendMessage);
+            continueMessage(chatId);
         } catch (JsonProcessingException | UnirestException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void continueMessage(long chatId){
+        new Thread(() -> {
+
+
+                SendMessage sendMessage1 = new SendMessage();
+                sendMessage1.setChatId(chatId);
+                sendMessage1.setText("Would you like to continue?");
+
+                InlineKeyboardButton yes = new InlineKeyboardButton();
+                yes.setText("yes");
+                yes.setCallbackData("yes");
+                InlineKeyboardButton no = new InlineKeyboardButton();
+                no.setText("no");
+                no.setCallbackData("no");
+
+                List<InlineKeyboardButton> topRow = List.of(yes, no);
+
+                List<List<InlineKeyboardButton>> keyboard = List.of(topRow);
+
+
+                InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+                inlineKeyboardMarkup.setKeyboard(keyboard);
+
+                sendMessage1.setReplyMarkup(inlineKeyboardMarkup);
+
+                send(sendMessage1);
+
+
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+
+
+
+        }).start();
+
+
     }
 
 
