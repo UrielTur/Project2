@@ -22,18 +22,16 @@ public class StaticScreen extends JFrame {
     private final JLabel uniqueUser;
     private final JLabel uniqueUserToBotNumber;
     private final JLabel popularUser;
-    private static JLabel popularUserToString;
+    private final JLabel popularUserToString;
     private final JLabel popularActivity;
     private final TheBot theBot;
 
     private static List<JCheckBox> selectedCheckboxes;
 
-    //    private static List<String> selectedCheckboxesToString;
     private final int maxSelectedCheckboxes = 3;
 
 
-//    private JButton buttonOfStatics;
-//    private JButton buttonOfGraph;
+
 
 
     public StaticScreen() {

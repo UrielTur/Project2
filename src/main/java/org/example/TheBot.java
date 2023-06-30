@@ -28,10 +28,10 @@ public class TheBot extends TelegramLongPollingBot {
     private int maxOfMessages = 0;
     private final static List<String> selectedCheckboxesToString = new ArrayList<>();
 
-
     public static List<String> getSelectedCheckboxesToString() {
         return selectedCheckboxesToString;
     }
+
 
 
     @Override
@@ -56,8 +56,7 @@ public class TheBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-      /////////  ///סעיף 1//////////////////////////////////
-
+        /////////  ///סעיף 1//////////////////////////////////
 
         long chatId;
 
@@ -69,15 +68,10 @@ public class TheBot extends TelegramLongPollingBot {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
 
-
-
         Integer specialPhase = this.phasesForLevels.get(chatId);
 
 
-
-
         if (specialPhase == null) {
-
 
             sendMessage.setText("Choose an option: "); //ההודעה למשתמש שיבחר אופציה
 
@@ -106,8 +100,8 @@ public class TheBot extends TelegramLongPollingBot {
 
             this.phasesForLevels.put(chatId, 1);
 
-
         } else if (specialPhase == 1) {
+
             if (update.getCallbackQuery().getData().equals("Tell a joke")) {
                 sendAJoke(chatId);
                 this.phasesForLevels.put(chatId, 4);
@@ -130,7 +124,9 @@ public class TheBot extends TelegramLongPollingBot {
                 sendMessage.setText("Write the number that you wants to know about him!");
                 this.phasesForLevels.put(chatId, 3);
             }
+
         } else if (specialPhase == 2) {
+
             String text = update.getMessage().getText();
 
             try {
@@ -150,13 +146,11 @@ public class TheBot extends TelegramLongPollingBot {
                 throw new RuntimeException(exception);
             }
 
+        } else if (specialPhase == 3) {
 
-        }
-        else if (specialPhase == 3) {
             String text = update.getMessage().getText();
 
             try {
-
                 com.mashape.unirest.http.HttpResponse<String> response3 = Unirest.get("http://numbersapi.com/" + text + "?json").asString();
                 ObjectMapper objectMapper3 = new ObjectMapper();
                 Numbers number = objectMapper3.readValue(response3.getBody(), Numbers.class);
@@ -174,23 +168,20 @@ public class TheBot extends TelegramLongPollingBot {
             }
 
 
-
-        }
-        else if (specialPhase == 4) {
+        }else if (specialPhase == 4) {
             String callbackData = update.getCallbackQuery().getData().toLowerCase();
             if (callbackData.equals("yes")) {
                 this.phasesForLevels.put(chatId, null);
-            } else if (callbackData.equals("no")){
+            } else if (callbackData.equals("no")) {
                 sendMessage.setText("Alright then. See you soon!. \nType /start to restart the bot.");
                 this.phasesForLevels.put(chatId, 5);
             }
-        }
-        else if (specialPhase == 5){
+
+        }else if (specialPhase == 5){
             String callbackData = update.getMessage().getText();
             if(callbackData.equals("/start"))
                 this.phasesForLevels.put(chatId, null);
         }
-
 
 
         send(sendMessage);
@@ -199,6 +190,7 @@ public class TheBot extends TelegramLongPollingBot {
 
 
 //סעיף 2 //////////////////////////////////////////////  /
+
 
 
         Integer phase = phases.get(chatId);  //נצהיר על משתנה מסוג Integer גם בשביל המפה
@@ -210,10 +202,8 @@ public class TheBot extends TelegramLongPollingBot {
                 startChatCounter++;
                 this.phases.put(chatId, phase); //המפה תחלק כל משתמש ייחודי לפי המזהה שלו ובעצם כל משתמש יופיע כייחודי
                 theSize = this.phases.size();
-
             }
         }
-
 
         String userId = update.getMessage().getFrom().getFirstName(); // מציאת המשתמש הפעיל ביותר
         if (countMessage.containsKey(userId)) {
@@ -234,15 +224,7 @@ public class TheBot extends TelegramLongPollingBot {
 
 
 
-
-
-
-
-
-
-
     }
-
 
 
 
@@ -254,7 +236,6 @@ public class TheBot extends TelegramLongPollingBot {
         }catch (TelegramApiException e){
             e.printStackTrace();
         }
-
     }
 
 
@@ -271,7 +252,6 @@ public class TheBot extends TelegramLongPollingBot {
             send(sendMessage);
 
             continueMessage(chatId);
-
 
         }catch (JacksonException | UnirestException exception){
             throw new RuntimeException(exception);
@@ -291,6 +271,7 @@ public class TheBot extends TelegramLongPollingBot {
             send(sendMessage);
 
             continueMessage(chatId);
+
         } catch (JsonProcessingException | UnirestException e) {
             throw new RuntimeException(e);
         }
@@ -306,6 +287,7 @@ public class TheBot extends TelegramLongPollingBot {
             sendMessage.setChatId(chatId);
             sendMessage.setText(catsFact);
             send(sendMessage);
+
             continueMessage(chatId);
         } catch (JsonProcessingException | UnirestException e) {
             throw new RuntimeException(e);
@@ -314,7 +296,6 @@ public class TheBot extends TelegramLongPollingBot {
 
     public void continueMessage(long chatId){
         new Thread(() -> {
-
 
                 SendMessage sendMessage1 = new SendMessage();
                 sendMessage1.setChatId(chatId);
@@ -345,8 +326,6 @@ public class TheBot extends TelegramLongPollingBot {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-
-
 
 
         }).start();
