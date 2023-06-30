@@ -155,10 +155,6 @@ public class StaticScreen extends JFrame {
 
 
 
-
-
-
-
         new Thread(() -> {
             selectedCheckboxes = new ArrayList<>();
 
@@ -169,7 +165,6 @@ public class StaticScreen extends JFrame {
             selectedCheckboxes.add(jCheckBoxes[0]);
             selectedCheckboxes.add(jCheckBoxes[1]);
             selectedCheckboxes.add(jCheckBoxes[2]);
-
 
 
             for (int i = 0; i < jCheckBoxes.length; i++) {
@@ -190,20 +185,6 @@ public class StaticScreen extends JFrame {
                 });
             }
         }).start();
-
-
-
-
-
-//        this.buttonOfStatics = new JButton("Bot Activities");
-//         this.buttonOfStatics.setBounds(20 , 500 , 120 , 35);
-//         this.add(buttonOfStatics);
-//
-//         this.buttonOfGraph = new JButton("Graph Static");
-//         this.buttonOfGraph.setBounds(170 , 500 , 130 , 35);
-//         this.add(buttonOfGraph);
-
-
 
 
         this.loop();
@@ -229,6 +210,7 @@ public class StaticScreen extends JFrame {
         }).start();
 
     }
+
 
 
 
