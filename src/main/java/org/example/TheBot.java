@@ -4,12 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import jdk.jshell.execution.Util;
+import org.glassfish.jersey.message.internal.Utils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import javax.swing.text.Utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,7 +142,14 @@ public class TheBot extends TelegramLongPollingBot {
                 } else {
                     String countryInfo = "The country you choose is: " + country.getName() + ". The population: " + country.getPopulation() + ". The capital is: " + country.getCapital() + ". The region is: " + country.getRegion() + " .";
                     sendMessage.setText(countryInfo);
-                    continueMessage(chatId);
+
+                    try {
+                        Thread.sleep(2000);
+                        continueMessage(chatId);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     this.phasesForLevels.put(chatId, 4);
 
                 }
@@ -157,7 +168,13 @@ public class TheBot extends TelegramLongPollingBot {
                 if (number.getNumber() >= Double.NEGATIVE_INFINITY && number.getNumber() <= Double.POSITIVE_INFINITY) {
                     String numberInfo = number.getText();
                     sendMessage.setText(numberInfo);
-                    continueMessage(chatId);
+                    try {
+                        Thread.sleep(2000);
+                        continueMessage(chatId);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     this.phasesForLevels.put(chatId, 4);
                 } else {
                     sendMessage.setText("Error, choose only number!");
@@ -251,7 +268,12 @@ public class TheBot extends TelegramLongPollingBot {
             sendMessage.setText(joke);
             send(sendMessage);
 
-            continueMessage(chatId);
+            try {
+                Thread.sleep(2000);
+                continueMessage(chatId);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
         }catch (JacksonException | UnirestException exception){
             throw new RuntimeException(exception);
@@ -270,7 +292,12 @@ public class TheBot extends TelegramLongPollingBot {
             sendMessage.setText(quote);
             send(sendMessage);
 
-            continueMessage(chatId);
+            try {
+                Thread.sleep(2000);
+                continueMessage(chatId);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
         } catch (JsonProcessingException | UnirestException e) {
             throw new RuntimeException(e);
@@ -288,7 +315,13 @@ public class TheBot extends TelegramLongPollingBot {
             sendMessage.setText(catsFact);
             send(sendMessage);
 
-            continueMessage(chatId);
+            try {
+                Thread.sleep(2000);
+                continueMessage(chatId);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
         } catch (JsonProcessingException | UnirestException e) {
             throw new RuntimeException(e);
         }
@@ -321,11 +354,6 @@ public class TheBot extends TelegramLongPollingBot {
                 send(sendMessage1);
 
 
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
 
 
         }).start();
