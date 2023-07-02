@@ -332,7 +332,7 @@ public class TheBot extends TelegramLongPollingBot {
 
                 SendMessage sendMessage1 = new SendMessage();
                 sendMessage1.setChatId(chatId);
-                sendMessage1.setText("Would you like to continue?");
+                sendMessage1.setText("Would you like to continue? (Click twice)");
 
                 InlineKeyboardButton yes = new InlineKeyboardButton();
                 yes.setText("yes");
