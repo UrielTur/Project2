@@ -4,16 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import jdk.jshell.execution.Util;
-import org.glassfish.jersey.message.internal.Utils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import javax.swing.text.Utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +19,7 @@ import java.util.Map;
 
 public class TheBot extends TelegramLongPollingBot {
     private int startChatCounter = 0;
-    private final Map<Long , Integer> phases = new HashMap<>(); // נגדיר מפה כדי לתת לכל משתמש מספר ייחודי משלו
+    public static Map<Long , Integer> phases = new HashMap<>(); // נגדיר מפה כדי לתת לכל משתמש מספר ייחודי משלו
     private final Map<Long , Integer> phasesForLevels = new HashMap<>(); // נגדיר מפה לשלבים
 
     private final Map<String , Integer> countMessage = new HashMap<>();
@@ -31,6 +27,7 @@ public class TheBot extends TelegramLongPollingBot {
     private String mostActiveUser = " ";
     private int maxOfMessages = 0;
     private final static List<String> selectedCheckboxesToString = new ArrayList<>();
+    public static List<String> mostFrequentString=new ArrayList<>();
 
     public static List<String> getSelectedCheckboxesToString() {
         return selectedCheckboxesToString;
@@ -107,24 +104,30 @@ public class TheBot extends TelegramLongPollingBot {
         } else if (specialPhase == 1) {
 
             if (update.getCallbackQuery().getData().equals("Tell a joke")) {
+                mostFrequentString.add("Tell a joke");
+                System.out.println(mostFrequentString);
                 sendAJoke(chatId);
                 this.phasesForLevels.put(chatId, 4);
 
             } else if (update.getCallbackQuery().getData().equals("Tell a quote")) {
+                mostFrequentString.add("Tell a quote");
                 sendQuote(chatId);
                 this.phasesForLevels.put(chatId, 4);
 
 
             } else if (update.getCallbackQuery().getData().equals("Fact about cats")) {
+                mostFrequentString.add("Fact about cats");
                 sendFact(chatId);
                 this.phasesForLevels.put(chatId, 4);
 
 
             } else if (update.getCallbackQuery().getData().equals("Country information")) {
+                mostFrequentString.add("Country information");
                 sendMessage.setText("Write the code of the country that you want to know about her. For example: ISR - Israel.");
                 this.phasesForLevels.put(chatId, 2);
 
             } else if (update.getCallbackQuery().getData().equals("Number fact")) {
+                mostFrequentString.add("Number fact");
                 sendMessage.setText("Write the number that you wants to know about him!");
                 this.phasesForLevels.put(chatId, 3);
             }

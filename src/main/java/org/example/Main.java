@@ -17,6 +17,9 @@ public class Main {
             throw new RuntimeException();
         }
 
+        Graph graph = new Graph();
+
     }
+
 
 }
