@@ -103,7 +103,7 @@ public class StaticScreen extends JFrame {
 
         this.popularActivityNumber = new JLabel(" ");
         this.popularActivityNumber.setFont(new Font("Arial", Font.BOLD, 17));
-        this.popularActivityNumber.setBounds(240, 250,200 , 25);
+        this.popularActivityNumber.setBounds(180, 150,200 , 25);
         this.add(popularActivityNumber);
 
 
@@ -162,6 +162,7 @@ public class StaticScreen extends JFrame {
 
 
 
+
         new Thread(() -> {
             selectedCheckboxes = new ArrayList<>();
 
@@ -212,7 +213,8 @@ public class StaticScreen extends JFrame {
                 }else {
                     popularUserToString.setText("'" + theBot.getMostActiveUser()+ "'" + " with " + theBot.getMaxOfMessages() + " messages");
                 }
-                popularActivityNumber.setText(theBot.);
+
+
 
 
             }
