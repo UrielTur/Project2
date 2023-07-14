@@ -1,10 +1,83 @@
 package org.example;
 
 
+import javax.swing.*;
 import java.util.List;
 
 
-public class Graph {
+public class Graph extends JPanel {
+    private int numberCount = 0;
+
+    public int getNumberCount(){
+        return numberCount;
+    }
+    public void setNumberCount(int numberCount){
+        this.numberCount = numberCount;
+
+    }
+    private int quoteCount = 0;
+
+    public int getQuoteCount() {
+        return quoteCount;
+    }
+
+    public void setQuoteCount(int quoteCount) {
+        this.quoteCount = quoteCount;
+    }
+
+    private int countriesCount = 0;
+
+    public int getCountriesCount() {
+        return countriesCount;
+    }
+
+    public void setCountriesCount(int countriesCount) {
+        this.countriesCount = countriesCount;
+    }
+
+    private int jokeCount = 0;
+
+    public int getJokeCount() {
+        return jokeCount;
+    }
+
+    public void setJokeCount(int jokeCount) {
+        this.jokeCount = jokeCount;
+    }
+
+    private int catCount = 0;
+
+    public int getCatCount() {
+        return catCount;
+    }
+
+    public void setCatCount(int catCount) {
+        this.catCount = catCount;
+    }
+
+    JLabel pic = new JLabel();
+
+    public void setChartConfig() {
+        new Thread(() -> {
+            QuickChart chart = new QuickChart();
+            chart.setConfig("{"
+                    + "    type: 'bar',"
+                    + "    data: {"
+                    + "        labels: ['numbers', 'quote', 'countries', 'joke','cat'],"
+                    + "        datasets: [{"
+                    + "            label: 'Users',"
+                    + "            data: ["+this.numberCount+", "+this.quoteCount+","+this.countriesCount+","+this.jokeCount+","+this.catCount+"]"
+                    + "        }]"
+                    + "    }"
+                    + "}"
+            );
+            chart.setWidth(500);
+            chart.setHeight(300);
+            byte[] image= chart.toByteArray();
+            ImageIcon img= new ImageIcon(image);
+            this.pic.setIcon(img);
+        }).start();
+    }
 
     private List<String> mostFrequentString;
     private List<String> options;

@@ -6,12 +6,15 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class StaticScreen extends JFrame {
+public  class StaticScreen extends JFrame{
+
+
     private static final int WINDOW_WIDTH = 600; //רוחב
     private static final int WINDOW_HEIGHT = 600; //גובה
 
@@ -26,6 +29,7 @@ public class StaticScreen extends JFrame {
     private final JLabel popularActivity;
     private final JLabel popularActivityNumber;
     private final TheBot theBot;
+    Graph graph;
 
     private static List<JCheckBox> selectedCheckboxes;
 
