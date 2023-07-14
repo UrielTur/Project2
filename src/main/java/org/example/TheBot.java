@@ -28,6 +28,14 @@ public class TheBot extends TelegramLongPollingBot {
     private int maxOfMessages = 0;
     private final static List<String> selectedCheckboxesToString = new ArrayList<>();
     public static List<String> mostFrequentString=new ArrayList<>();
+    private Map<Integer, Integer> countApiMap = new HashMap<>();
+    private String popularActivity = "Nothing ";
+    private List<String> namesApi = List.of("Joke", "Quote", "Cat fact", "Country", "Number fact");
+    private int countJoke;
+    private int countCountry;
+    private int countQuote;
+    private int countCatFact;
+    private int countNumFact;
 
     public static List<String> getSelectedCheckboxesToString() {
         return selectedCheckboxesToString;
@@ -107,28 +115,38 @@ public class TheBot extends TelegramLongPollingBot {
                 mostFrequentString.add("Tell a joke");
                 System.out.println(mostFrequentString);
                 sendAJoke(chatId);
+                this.countJoke++;
+                countApiMap.put(0,countJoke);
                 this.phasesForLevels.put(chatId, 4);
 
             } else if (update.getCallbackQuery().getData().equals("Tell a quote")) {
                 mostFrequentString.add("Tell a quote");
                 sendQuote(chatId);
+                this.countQuote++;
+                countApiMap.put(1,countQuote);
                 this.phasesForLevels.put(chatId, 4);
 
 
             } else if (update.getCallbackQuery().getData().equals("Fact about cats")) {
                 mostFrequentString.add("Fact about cats");
                 sendFact(chatId);
+                this.countCatFact++;
+                countApiMap.put(2,countCatFact);
                 this.phasesForLevels.put(chatId, 4);
 
 
             } else if (update.getCallbackQuery().getData().equals("Country information")) {
                 mostFrequentString.add("Country information");
                 sendMessage.setText("Write the code of the country that you want to know about her. For example: ISR - Israel.");
+                this.countCountry++;
+                countApiMap.put(3,countCountry);
                 this.phasesForLevels.put(chatId, 2);
 
             } else if (update.getCallbackQuery().getData().equals("Number fact")) {
                 mostFrequentString.add("Number fact");
                 sendMessage.setText("Write the number that you wants to know about him!");
+                this.countNumFact++;
+                countApiMap.put(4,countNumFact);
                 this.phasesForLevels.put(chatId, 3);
             }
 
@@ -358,10 +376,19 @@ public class TheBot extends TelegramLongPollingBot {
 
 
 
-
         }).start();
 
 
+    }
+    public synchronized String getPopularActivity(){
+        int max = 0;
+        for (int i = 0; i < namesApi.size() ; i++) {
+            if (countApiMap.get(i) != null && countApiMap.get(i) > max){
+                max = countApiMap.get(i);
+                popularActivity = namesApi.get(i);
+            }
+        }
+        return popularActivity;
     }
 
 

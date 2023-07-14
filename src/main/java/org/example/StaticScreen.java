@@ -101,11 +101,11 @@ public  class StaticScreen extends JFrame{
 
         this.popularActivity = new JLabel(" The popular activity: ");
         this.popularActivity.setFont(new Font("Arial", Font.BOLD, 17));
-        this.popularActivity.setBounds(0, 150, 250, 25);
+        this.popularActivity.setBounds(0, 150, 180, 25);
         this.add(popularActivity);
 
 
-        this.popularActivityNumber = new JLabel(" ");
+        this.popularActivityNumber = new JLabel(this.theBot.getPopularActivity());
         this.popularActivityNumber.setFont(new Font("Arial", Font.BOLD, 17));
         this.popularActivityNumber.setBounds(180, 150,200 , 25);
         this.add(popularActivityNumber);
@@ -212,6 +212,8 @@ public  class StaticScreen extends JFrame{
             while (true){
                 amountOfRequestsToBotNumber.setText(theBot.getStartChatCounter()+" ");
                 uniqueUserToBotNumber.setText(theBot.getTheSize()+" ");
+                this.popularActivityNumber.setText( this.theBot.getPopularActivity());
+
                 if (theBot.getMostActiveUser().equals(" ") && theBot.getMaxOfMessages() == 0) {
                     popularUserToString.setText("No one");
                 }else {
