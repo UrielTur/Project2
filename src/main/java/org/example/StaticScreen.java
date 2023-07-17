@@ -15,8 +15,9 @@ import java.util.List;
 public  class StaticScreen extends JFrame{
 
 
-    private static final int WINDOW_WIDTH = 600; //רוחב
-    private static final int WINDOW_HEIGHT = 600; //גובה
+    private static final int WINDOW_WIDTH = 1000; //רוחב
+    private static final int WINDOW_HEIGHT = 1000; //גובה
+    Graph graph;
 
 
     private final JLabel botStatics;
@@ -29,7 +30,6 @@ public  class StaticScreen extends JFrame{
     private final JLabel popularActivity;
     private final JLabel popularActivityNumber;
     private final TheBot theBot;
-    Graph graph;
 
     private static List<JCheckBox> selectedCheckboxes;
 
@@ -55,6 +55,8 @@ public  class StaticScreen extends JFrame{
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
+        this.graph = new Graph();
+        this.add(graph);
 
         mainPanel.setBackground(new Color(34 , 158 , 250));
 
@@ -200,6 +202,7 @@ public  class StaticScreen extends JFrame{
 
 
         this.loop();
+        this.add(graph);
         this.add(mainPanel);
     }
 

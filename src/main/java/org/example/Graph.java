@@ -86,11 +86,19 @@ public class Graph extends JPanel {
     // private ImageIcon chart.getUrl()
 
     public Graph(){
+        setChartConfig();
+        this.setLayout(null);
         this.mostFrequentString = TheBot.mostFrequentString;
         this.options = TheBot.getSelectedCheckboxesToString();
         this.usersSize = TheBot.phases.size();
         this.useOfOptions = new int[3];
-        updateData();
+//        updateData();
+
+        this.add(pic);
+        pic.setBounds(150,50,500,300);
+        this.setLayout(null);
+        this.setBounds(150,50,500,300);
+        this.setVisible(true);
     }
 
 
@@ -110,7 +118,6 @@ public class Graph extends JPanel {
                     "  }" +
                     "}");
 
-
         System.out.println(chart.getUrl());
 
 
@@ -120,7 +127,6 @@ public class Graph extends JPanel {
         new Thread(() ->{
             int listSize = this.mostFrequentString.size();
             while (true){
-                getGraph();
                 this.mostFrequentString = TheBot.mostFrequentString;
                 this.usersSize = TheBot.phases.size();
                 this.options = TheBot.getSelectedCheckboxesToString();
