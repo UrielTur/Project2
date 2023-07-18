@@ -16,7 +16,7 @@ public  class StaticScreen extends JFrame{
 
 
     private static final int WINDOW_WIDTH = 1000; //רוחב
-    private static final int WINDOW_HEIGHT = 1000; //גובה
+    private static final int WINDOW_HEIGHT = 700; //גובה
     Graph graph;
 
 
@@ -29,6 +29,8 @@ public  class StaticScreen extends JFrame{
     private final JLabel popularUserToString;
     private final JLabel popularActivity;
     private final JLabel popularActivityNumber;
+    private final JLabel graphStatics;
+
     private final TheBot theBot;
 
     private static List<JCheckBox> selectedCheckboxes;
@@ -64,6 +66,11 @@ public  class StaticScreen extends JFrame{
         this.botStatics.setFont(new Font("Arial", Font.BOLD, 27));
         this.botStatics.setBounds(0, 10, 370, 30);
         this.add(botStatics);
+
+        this.graphStatics = new JLabel("Graph Statics: ");
+        this.graphStatics.setFont(new Font("Arial", Font.BOLD, 27));
+        this.graphStatics.setBounds(700, 10, 370, 30);
+        this.add(graphStatics);
 
 
         this.amountOfRequestsToBot = new JLabel(" The sum of requests to bot: ");
@@ -103,7 +110,7 @@ public  class StaticScreen extends JFrame{
 
         this.popularActivity = new JLabel(" The popular activity: ");
         this.popularActivity.setFont(new Font("Arial", Font.BOLD, 17));
-        this.popularActivity.setBounds(0, 150, 180, 25);
+        this.popularActivity.setBounds(0, 150, 250, 25);
         this.add(popularActivity);
 
 

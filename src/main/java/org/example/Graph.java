@@ -66,12 +66,12 @@ public class Graph extends JPanel {
                     + "        labels: ['numbers', 'quote', 'countries', 'joke','cat'],"
                     + "        datasets: [{"
                     + "            label: 'Users',"
-                    + "            data: ["+this.numberCount+", "+this.quoteCount+","+this.countriesCount+","+this.jokeCount+","+this.catCount+"]"
+                    + "            data: ["+this.usersSize + "," +this.useOfOptions[0] + ","+ useOfOptions[1] + ","+useOfOptions[2]+"]"
                     + "        }]"
                     + "    }"
                     + "}"
             );
-            chart.setWidth(500);
+            chart.setWidth(330);
             chart.setHeight(300);
             byte[] image= chart.toByteArray();
             ImageIcon img= new ImageIcon(image);
@@ -92,12 +92,12 @@ public class Graph extends JPanel {
         this.options = TheBot.getSelectedCheckboxesToString();
         this.usersSize = TheBot.phases.size();
         this.useOfOptions = new int[3];
-//        updateData();
+        updateData();
 
         this.add(pic);
-        pic.setBounds(150,50,500,300);
+        pic.setBounds(10,20,600,325);
         this.setLayout(null);
-        this.setBounds(150,50,500,300);
+        this.setBounds(600,50,370,330);
         this.setVisible(true);
     }
 
@@ -113,7 +113,7 @@ public class Graph extends JPanel {
                     "    labels: ['users', '"+this.options.get(0)+"', '"+this.options.get(1)+"', '"+this.options.get(2)+"']," +
                     "    datasets: [{" +
                     "      label: 'amount'," +
-                    "      data: [" + usersSize + "," +this.useOfOptions[0] + ","+ useOfOptions[1] + ","+useOfOptions[2]+ "]" +
+                    "      data: [" + this.numberCount+","+this.quoteCount+","+this.countriesCount+","+this.jokeCount+","+this.catCount+"]"+
                     "    }]" +
                     "  }" +
                     "}");
