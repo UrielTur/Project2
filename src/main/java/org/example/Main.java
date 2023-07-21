@@ -7,6 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
 
+
         StaticScreen window = new StaticScreen();
         window.showWindow();
         try {
@@ -18,6 +19,7 @@ public class Main {
         }
 
         Graph graph = new Graph();
+
 
     }
 

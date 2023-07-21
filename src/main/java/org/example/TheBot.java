@@ -10,6 +10,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +21,9 @@ import java.util.Map;
 
 
 public class TheBot extends TelegramLongPollingBot {
+
+
+
     private int startChatCounter = 0;
     public static Map<Long , Integer> phases = new HashMap<>(); // נגדיר מפה כדי לתת לכל משתמש מספר ייחודי משלו
     private final Map<Long , Integer> phasesForLevels = new HashMap<>(); // נגדיר מפה לשלבים
@@ -43,6 +49,14 @@ public class TheBot extends TelegramLongPollingBot {
 
 
 
+    public static List<String> getMostFrequentString() {
+        return mostFrequentString;
+    }
+
+    LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    String currentTime = now.format(formatter);
+
     @Override
     public String getBotUsername() {
         return "UEM123Bot";
@@ -57,8 +71,6 @@ public class TheBot extends TelegramLongPollingBot {
     public void onRegister() {
         super.onRegister();
     }
-
-
 
 
 
@@ -112,7 +124,7 @@ public class TheBot extends TelegramLongPollingBot {
         } else if (specialPhase == 1) {
 
             if (update.getCallbackQuery().getData().equals("Tell a joke")) {
-                mostFrequentString.add("Tell a joke");
+                mostFrequentString.add("Tell a joke"+"  "+ currentTime);
                 System.out.println(mostFrequentString);
                 sendAJoke(chatId);
                 this.countJoke++;
@@ -120,7 +132,7 @@ public class TheBot extends TelegramLongPollingBot {
                 this.phasesForLevels.put(chatId, 4);
 
             } else if (update.getCallbackQuery().getData().equals("Tell a quote")) {
-                mostFrequentString.add("Tell a quote");
+                mostFrequentString.add("Tell a quote"+"  "+ currentTime);
                 sendQuote(chatId);
                 this.countQuote++;
                 countApiMap.put(1,countQuote);
@@ -128,7 +140,11 @@ public class TheBot extends TelegramLongPollingBot {
 
 
             } else if (update.getCallbackQuery().getData().equals("Fact about cats")) {
-                mostFrequentString.add("Fact about cats");
+                mostFrequentString.add("Fact about cats "+"  "+ currentTime);
+
+
+
+
                 sendFact(chatId);
                 this.countCatFact++;
                 countApiMap.put(2,countCatFact);
@@ -136,14 +152,14 @@ public class TheBot extends TelegramLongPollingBot {
 
 
             } else if (update.getCallbackQuery().getData().equals("Country information")) {
-                mostFrequentString.add("Country information");
+                mostFrequentString.add("Country information"+"  "+ currentTime);
                 sendMessage.setText("Write the code of the country that you want to know about her. For example: ISR - Israel.");
                 this.countCountry++;
                 countApiMap.put(3,countCountry);
                 this.phasesForLevels.put(chatId, 2);
 
             } else if (update.getCallbackQuery().getData().equals("Number fact")) {
-                mostFrequentString.add("Number fact");
+                mostFrequentString.add("Number fact"+"  "+ currentTime);
                 sendMessage.setText("Write the number that you wants to know about him!");
                 this.countNumFact++;
                 countApiMap.put(4,countNumFact);

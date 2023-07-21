@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public  class StaticScreen extends JFrame{
+public  class StaticScreen extends JFrame {
 
 
     private static final int WINDOW_WIDTH = 1000; //רוחב
@@ -31,13 +31,23 @@ public  class StaticScreen extends JFrame{
     private final JLabel popularActivityNumber;
     private final JLabel graphStatics;
 
+    private JLabel historyOfTenLast;
+    private JLabel historyOfTenLastList;
+    // JLabel  historyOfTenLastList = new JLabel("<html>Last ten messages: </html>");// html helps with text
     private final TheBot theBot;
+
 
     private static List<JCheckBox> selectedCheckboxes;
 
     private final int maxSelectedCheckboxes = 3;
 
-
+//
+//    public void html1(StaticScreen historyOfTenLastList) {
+//        String str = "<html>";
+//        for (int i = 0; i < TheBot.mostFrequentString.size(); i++) {
+//            str += TheBot.mostFrequentString.get(i) + "<br>";
+//        }
+//        str += "/html";
 
 
 
@@ -60,7 +70,7 @@ public  class StaticScreen extends JFrame{
         this.graph = new Graph();
         this.add(graph);
 
-        mainPanel.setBackground(new Color(34 , 158 , 250));
+        mainPanel.setBackground(new Color(34, 158, 250));
 
         this.botStatics = new JLabel(" TelegramBot Statics: ");
         this.botStatics.setFont(new Font("Arial", Font.BOLD, 27));
@@ -80,7 +90,7 @@ public  class StaticScreen extends JFrame{
 
         this.amountOfRequestsToBotNumber = new JLabel(" ");
         this.amountOfRequestsToBotNumber.setFont(new Font("Arial", Font.BOLD, 17));
-        this.amountOfRequestsToBotNumber.setBounds(240, 60,200 , 25);
+        this.amountOfRequestsToBotNumber.setBounds(240, 60, 200, 25);
         this.add(amountOfRequestsToBotNumber);
 
 
@@ -116,10 +126,33 @@ public  class StaticScreen extends JFrame{
 
         this.popularActivityNumber = new JLabel(this.theBot.getPopularActivity());
         this.popularActivityNumber.setFont(new Font("Arial", Font.BOLD, 17));
-        this.popularActivityNumber.setBounds(180, 150,200 , 25);
+        this.popularActivityNumber.setBounds(180, 150, 200, 25);
         this.add(popularActivityNumber);
 
 
+        this.historyOfTenLast = new JLabel(" The history of 10 activities: ");
+        this.historyOfTenLast.setFont(new Font("Arial", Font.BOLD, 17));
+        this.historyOfTenLast.setBounds(0, 550, 250, 25);
+        this.add(historyOfTenLast);
+
+
+        this.historyOfTenLastList = new JLabel(" ");
+        this.historyOfTenLastList.setFont(new Font("Arial", Font.BOLD, 8));
+        this.historyOfTenLastList.setBounds(0, 570, 5000, 20);
+
+
+        this.add(historyOfTenLastList);
+
+
+        String str = "<html>";
+        for (int i = 0; i < TheBot.mostFrequentString.size(); i++) {
+            str += TheBot.mostFrequentString.get(i) + "<br>";
+        }
+        str += "/html";
+
+
+        //  private static final int WINDOW_WIDTH = 1000; //רוחב
+        //    private static final int WINDOW_HEIGHT = 700; //גובה
 
 
         JLabel optionsLabel = new JLabel("Choose 3 options for the TelegramBot");
@@ -162,7 +195,7 @@ public  class StaticScreen extends JFrame{
 
 
         JButton refreshButton = new JButton("Refresh Options");
-        refreshButton.setBounds(20, 520 , 150, 30);
+        refreshButton.setBounds(20, 520, 150, 30);
         refreshButton.addActionListener(e -> {
             System.out.println(TheBot.getSelectedCheckboxesToString());
 
@@ -171,9 +204,6 @@ public  class StaticScreen extends JFrame{
             repaint();
         });
         this.add(refreshButton);
-
-
-
 
 
         new Thread(() -> {
@@ -214,26 +244,50 @@ public  class StaticScreen extends JFrame{
     }
 
 
+    public void loop() {
 
-
-    public void loop(){
-
-        new Thread(()->{
-            while (true){
-                amountOfRequestsToBotNumber.setText(theBot.getStartChatCounter()+" ");
-                uniqueUserToBotNumber.setText(theBot.getTheSize()+" ");
-                this.popularActivityNumber.setText( this.theBot.getPopularActivity());
+        new Thread(() -> {
+            while (true) {
+                amountOfRequestsToBotNumber.setText(theBot.getStartChatCounter() + " ");
+                uniqueUserToBotNumber.setText(theBot.getTheSize() + " ");
+                this.popularActivityNumber.setText(this.theBot.getPopularActivity());
 
                 if (theBot.getMostActiveUser().equals(" ") && theBot.getMaxOfMessages() == 0) {
                     popularUserToString.setText("No one");
-                }else {
-                    popularUserToString.setText("'" + theBot.getMostActiveUser()+ "'" + " with " + theBot.getMaxOfMessages() + " messages");
+                } else {
+                    popularUserToString.setText("'" + theBot.getMostActiveUser() + "'" + " with " + theBot.getMaxOfMessages() + " messages");
                 }
 
+                if (theBot.getMostFrequentString().size() <= 10) {
+                    historyOfTenLastList.setText(theBot.getMostFrequentString() + " ");
+                    //text
+                } else {
+                    for (int i = theBot.getMostFrequentString().size(); i <= theBot.getMostFrequentString().size() - 10; i--) {//תראה פה ניסתי ממה שיחיאל אמר לי
+                        historyOfTenLastList.setText(historyOfTenLastList.getText()+
+                               "<html>"
+                                +"historyOfTenLastList.get(i)"
+                                +"<br>"
+                                +"historyOfTenLastList.get(i-1)"
+                                +"<html/>");
+
+                    };
+
+                }
+
+
+//
+//                        historyOfTenLastList.setText("<html><body>theBot.getMostFrequentString().get(i)" +
+//                                "<br>theBot.getMostFrequentString().get(i)<br>" +
+//                                "שורה שלשית</body></html>");
+
+
+                 //       historyOfTenLastList.setText(theBot.getMostFrequentString().get(i));
 
 
 
             }
+
+
         }).start();
 
     }
@@ -241,11 +295,42 @@ public  class StaticScreen extends JFrame{
 
 
 
+//
+//    public void newJLabel() {
+//        //בדיקה ומעבר לשורה הבאה כאשר התווית מגיעה לקצה הימני של החלון
+//        Dimension labelSize = historyOfTenLastList.getSize();
+//        int historyOfTenLastList_labelHeight= (int) labelSize.getHeight();
+//        int historyOfTenLastList_labelWidth= (int) labelSize.getWidth();
+//        int x = getX();
+//       int y = getY();
+//        for (int i = 0; i < theBot.getMostFrequentString().size(); i++) {
+//              int limit_x = Integer.parseInt(theBot.getMostFrequentString().get(i));
+//            String currentString = theBot.getMostFrequentString().get(i);
+//            int count = theBot.getMostFrequentString().lastIndexOf(currentString) - theBot.getMostFrequentString().indexOf(currentString) + 1;
+//            if (limit_x == count) {
+//                if (getX() + labelSize.width <= WINDOW_WIDTH) {
+//                  x += labelSize.width;
+//                } else {
+//                    x = 0;
+//                    y += historyOfTenLastList_labelHeight;
+//                }
+//
+//                // הזזת התווית לשורה הבאה
+//                y += 20;
+//                if (y + historyOfTenLastList_labelHeight <= WINDOW_HEIGHT) {
+//                    JLabel label = new JLabel(currentString);
+//                    label.setLocation(x, y);
+//                    historyOfTenLastList.add(label);
+//                }
+//            }
+//        }
+//
 
-    public void showWindow () {
+    // }
+
+
+    public void showWindow() {
         this.setVisible(true);
     }
-
-
-
 }
+

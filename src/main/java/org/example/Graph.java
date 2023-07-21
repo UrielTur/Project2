@@ -57,18 +57,19 @@ public class Graph extends JPanel {
 
     JLabel pic = new JLabel();
 
-    public void setChartConfig() {
+
+    public void setChartConfig() {//יוצר את הגרף בחלון
         new Thread(() -> {
-            QuickChart chart = new QuickChart();
+            QuickChart chart = new QuickChart();//63
             chart.setConfig("{"
-                    + "    type: 'bar',"
-                    + "    data: {"
-                    + "        labels: ['numbers', 'quote', 'countries', 'joke','cat'],"
-                    + "        datasets: [{"
+                    + "    type: 'bar',\n"
+                    + "    data: {\n"
+                    + "        labels: ['numbers', 'quote', 'countries', 'joke','cat'],\n"
+                    + "        datasets: [{\n"
                     + "            label: 'Users',"
                     + "            data: ["+this.usersSize + "," +this.useOfOptions[0] + ","+ useOfOptions[1] + ","+useOfOptions[2]+"]"
-                    + "        }]"
-                    + "    }"
+                    + "        }]\n"
+                    + "    }\n"
                     + "}"
             );
             chart.setWidth(330);
@@ -85,7 +86,7 @@ public class Graph extends JPanel {
     private int[] useOfOptions;
     // private ImageIcon chart.getUrl()
 
-    public Graph(){
+    public Graph(){//הגרף עצמו
         setChartConfig();
         this.setLayout(null);
         this.mostFrequentString = TheBot.mostFrequentString;
