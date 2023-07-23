@@ -6,7 +6,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ public  class StaticScreen extends JFrame {
 
     private JLabel historyOfTenLast;
     private JLabel historyOfTenLastList;
-    // JLabel  historyOfTenLastList = new JLabel("<html>Last ten messages: </html>");// html helps with text
     private final TheBot theBot;
 
 
@@ -41,13 +39,6 @@ public  class StaticScreen extends JFrame {
 
     private final int maxSelectedCheckboxes = 3;
 
-//
-//    public void html1(StaticScreen historyOfTenLastList) {
-//        String str = "<html>";
-//        for (int i = 0; i < TheBot.mostFrequentString.size(); i++) {
-//            str += TheBot.mostFrequentString.get(i) + "<br>";
-//        }
-//        str += "/html";
 
 
 
@@ -144,15 +135,8 @@ public  class StaticScreen extends JFrame {
         this.add(historyOfTenLastList);
 
 
-        String str = "<html>";
-        for (int i = 0; i < TheBot.mostFrequentString.size(); i++) {
-            str += TheBot.mostFrequentString.get(i) + "<br>";
-        }
-        str += "/html";
 
 
-        //  private static final int WINDOW_WIDTH = 1000; //רוחב
-        //    private static final int WINDOW_HEIGHT = 700; //גובה
 
 
         JLabel optionsLabel = new JLabel("Choose 3 options for the TelegramBot");
@@ -197,8 +181,6 @@ public  class StaticScreen extends JFrame {
         JButton refreshButton = new JButton("Refresh Options");
         refreshButton.setBounds(20, 520, 150, 30);
         refreshButton.addActionListener(e -> {
-            System.out.println(TheBot.getSelectedCheckboxesToString());
-
 
             revalidate();
             repaint();
@@ -207,33 +189,35 @@ public  class StaticScreen extends JFrame {
 
 
         new Thread(() -> {
-            selectedCheckboxes = new ArrayList<>();
+            synchronized (this) {
+                selectedCheckboxes = new ArrayList<>();
 
-            TheBot.getSelectedCheckboxesToString().add(jCheckBoxes[0].getText());
-            TheBot.getSelectedCheckboxesToString().add(jCheckBoxes[1].getText());
-            TheBot.getSelectedCheckboxesToString().add(jCheckBoxes[2].getText());
+                TheBot.getSelectedCheckboxesToString().add(jCheckBoxes[0].getText());
+                TheBot.getSelectedCheckboxesToString().add(jCheckBoxes[1].getText());
+                TheBot.getSelectedCheckboxesToString().add(jCheckBoxes[2].getText());
 
-            selectedCheckboxes.add(jCheckBoxes[0]);
-            selectedCheckboxes.add(jCheckBoxes[1]);
-            selectedCheckboxes.add(jCheckBoxes[2]);
+                selectedCheckboxes.add(jCheckBoxes[0]);
+                selectedCheckboxes.add(jCheckBoxes[1]);
+                selectedCheckboxes.add(jCheckBoxes[2]);
 
 
-            for (int i = 0; i < jCheckBoxes.length; i++) {
-                JCheckBox checkBox = jCheckBoxes[i];
-                checkBox.addItemListener(e -> {
-                    if (e.getStateChange() == ItemEvent.SELECTED) {
-                        if (selectedCheckboxes.size() >= this.maxSelectedCheckboxes) {
-                            checkBox.setSelected(false); // שינוי מצב התיבה ללא מסומנת
-                        } else {
-                            selectedCheckboxes.add(checkBox);
-                            TheBot.getSelectedCheckboxesToString().add(checkBox.getText());
+                for (int i = 0; i < jCheckBoxes.length; i++) {
+                    JCheckBox checkBox = jCheckBoxes[i];
+                    checkBox.addItemListener(e -> {
+                        if (e.getStateChange() == ItemEvent.SELECTED) {
+                            if (selectedCheckboxes.size() >= this.maxSelectedCheckboxes) {
+                                checkBox.setSelected(false); // שינוי מצב התיבה ללא מסומנת
+                            } else {
+                                selectedCheckboxes.add(checkBox);
+                                TheBot.getSelectedCheckboxesToString().add(checkBox.getText());
+                            }
+                        } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                            selectedCheckboxes.remove(checkBox);
+                            TheBot.getSelectedCheckboxesToString().remove(checkBox.getText());
                         }
-                    } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-                        selectedCheckboxes.remove(checkBox);
-                        TheBot.getSelectedCheckboxesToString().remove(checkBox.getText());
-                    }
 
-                });
+                    });
+                }
             }
         }).start();
 
@@ -248,42 +232,33 @@ public  class StaticScreen extends JFrame {
 
         new Thread(() -> {
             while (true) {
-                amountOfRequestsToBotNumber.setText(theBot.getStartChatCounter() + " ");
-                uniqueUserToBotNumber.setText(theBot.getTheSize() + " ");
-                this.popularActivityNumber.setText(this.theBot.getPopularActivity());
+                synchronized (this) {
+                    amountOfRequestsToBotNumber.setText(theBot.getStartChatCounter() + " ");
+                    uniqueUserToBotNumber.setText(theBot.getTheSize() + " ");
+                    this.popularActivityNumber.setText(this.theBot.getPopularActivity());
 
-                if (theBot.getMostActiveUser().equals(" ") && theBot.getMaxOfMessages() == 0) {
-                    popularUserToString.setText("No one");
-                } else {
-                    popularUserToString.setText("'" + theBot.getMostActiveUser() + "'" + " with " + theBot.getMaxOfMessages() + " messages");
+                    if (theBot.getMostActiveUser().equals(" ") && theBot.getMaxOfMessages() == 0) {
+                        popularUserToString.setText("No one");
+                    } else {
+                        popularUserToString.setText("'" + theBot.getMostActiveUser() + "'" + " with " + theBot.getMaxOfMessages() + " messages");
+                    }
+
+                    if (theBot.getMostFrequentString().size() <= 10) {
+                        historyOfTenLastList.setText(theBot.getMostFrequentString() + " ");
+                        //text
+                    } else {
+                        for (int i = theBot.getMostFrequentString().size(); i <= theBot.getMostFrequentString().size() - 10; i--) {
+                            historyOfTenLastList.setText(historyOfTenLastList.getText() +
+                                    "<html>"
+                                    + "historyOfTenLastList.get(i)"
+                                    + "<br>"
+                                    + "historyOfTenLastList.get(i-1)"
+                                    + "<html/>");
+
+                        }
+
+                    }
                 }
-
-                if (theBot.getMostFrequentString().size() <= 10) {
-                    historyOfTenLastList.setText(theBot.getMostFrequentString() + " ");
-                    //text
-                } else {
-                    for (int i = theBot.getMostFrequentString().size(); i <= theBot.getMostFrequentString().size() - 10; i--) {//תראה פה ניסתי ממה שיחיאל אמר לי
-                        historyOfTenLastList.setText(historyOfTenLastList.getText()+
-                               "<html>"
-                                +"historyOfTenLastList.get(i)"
-                                +"<br>"
-                                +"historyOfTenLastList.get(i-1)"
-                                +"<html/>");
-
-                    };
-
-                }
-
-
-//
-//                        historyOfTenLastList.setText("<html><body>theBot.getMostFrequentString().get(i)" +
-//                                "<br>theBot.getMostFrequentString().get(i)<br>" +
-//                                "שורה שלשית</body></html>");
-
-
-                 //       historyOfTenLastList.setText(theBot.getMostFrequentString().get(i));
-
-
 
             }
 
@@ -292,41 +267,6 @@ public  class StaticScreen extends JFrame {
 
     }
 
-
-
-
-//
-//    public void newJLabel() {
-//        //בדיקה ומעבר לשורה הבאה כאשר התווית מגיעה לקצה הימני של החלון
-//        Dimension labelSize = historyOfTenLastList.getSize();
-//        int historyOfTenLastList_labelHeight= (int) labelSize.getHeight();
-//        int historyOfTenLastList_labelWidth= (int) labelSize.getWidth();
-//        int x = getX();
-//       int y = getY();
-//        for (int i = 0; i < theBot.getMostFrequentString().size(); i++) {
-//              int limit_x = Integer.parseInt(theBot.getMostFrequentString().get(i));
-//            String currentString = theBot.getMostFrequentString().get(i);
-//            int count = theBot.getMostFrequentString().lastIndexOf(currentString) - theBot.getMostFrequentString().indexOf(currentString) + 1;
-//            if (limit_x == count) {
-//                if (getX() + labelSize.width <= WINDOW_WIDTH) {
-//                  x += labelSize.width;
-//                } else {
-//                    x = 0;
-//                    y += historyOfTenLastList_labelHeight;
-//                }
-//
-//                // הזזת התווית לשורה הבאה
-//                y += 20;
-//                if (y + historyOfTenLastList_labelHeight <= WINDOW_HEIGHT) {
-//                    JLabel label = new JLabel(currentString);
-//                    label.setLocation(x, y);
-//                    historyOfTenLastList.add(label);
-//                }
-//            }
-//        }
-//
-
-    // }
 
 
     public void showWindow() {

@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class TheBot extends TelegramLongPollingBot {
 
 
     @Override
-    public void onUpdateReceived(Update update) {
+    public synchronized void onUpdateReceived(Update update) {
 
         /////////  ///סעיף 1//////////////////////////////////
 
@@ -366,7 +365,7 @@ public class TheBot extends TelegramLongPollingBot {
 
     public void continueMessage(long chatId){
         new Thread(() -> {
-
+            synchronized (this) {
                 SendMessage sendMessage1 = new SendMessage();
                 sendMessage1.setChatId(chatId);
                 sendMessage1.setText("Would you like to continue? (Click twice)");
@@ -391,7 +390,7 @@ public class TheBot extends TelegramLongPollingBot {
                 send(sendMessage1);
 
 
-
+            }
         }).start();
 
 
